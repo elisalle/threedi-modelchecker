@@ -2,17 +2,7 @@ name: Build and publish
 
 # Run on PR requests. And on master itself.
 on:
-  push:
-    branches:
-      - main  # just build the sdist skip release
-    tags:
-      - "*"
-  pull_request:  # also build on PRs touching some files
-    paths:
-      - ".github/workflows/release.yml"
-      - "MANIFEST.in"
-      - "setup.cfg"
-      - "setup.py"
+  workflow_dispatch:
 
 jobs:
   build:
@@ -61,7 +51,6 @@ jobs:
 
   trigger_docs_pr:
     name: Trigger schematisation checks PR workflow on threedi-docs
-    needs: [publish]
     runs-on: ubuntu-latest
     steps:
       - name: install cURL
@@ -73,5 +62,5 @@ jobs:
           -H "Accept: application/vnd.github+json" \
           -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
-          https://api.github.com/repos/nens/threedi-docs/actions/workflows/update-checks-list/dispatches \
+          https://api.github.com/repos/elisalle/threedi-docs/actions/workflows/update-checks-list/dispatches \
           -d '{"ref":"master","inputs":{"reviewer_name":${{ github.actor }}}}'
